@@ -1,6 +1,7 @@
 """
 Custom exceptions for Hospital Resource Management System.
 Stage 2: Minimal essential exceptions.
+Stage 3: Added RoomNotFoundError.
 """
 
 
@@ -32,11 +33,11 @@ class RoomNotFoundError(HospitalError):
 
 class AppointmentConflictError(HospitalError):
     """Raised when scheduling conflicts with existing appointment."""
-    def __init__(self, date: str, time: str, resource_name: str):
+    def __init__(self, date: str, time: str, resource: str):
         self.date = date
         self.time = time
         super().__init__(
-            f"Resource '{resource_name}' is not available on {date} at {time}"
+            f"{resource} is not available on {date} at {time}"
         )
 
 

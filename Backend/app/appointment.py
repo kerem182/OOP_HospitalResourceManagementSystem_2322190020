@@ -1,11 +1,11 @@
 """
 Appointment class demonstrating composition.
-Stage 2: Added status management and Room composition.
+Stage 3: Added room reference for complete tracking.
 """
 from .identifiable import Identifiable
 from .patient import Patient
 from .doctor import Doctor
-from .room import Room # Room object imported
+from .room import Room
 
 
 class Appointment(Identifiable):
@@ -15,18 +15,18 @@ class Appointment(Identifiable):
     """
     
     def __init__(self, date: str, time: str, reason: str, 
-                 patient: Patient, doctor: Doctor, room: Room): # Added room
+                 patient: Patient, doctor: Doctor, room: Room):
         self.date = date
         self.time = time
         self.reason = reason
-        self.patient = patient 
-        self.doctor = doctor 
-        self.room = room # Composition
+        self.patient = patient  # Composition
+        self.doctor = doctor    # Composition
+        self.room = room        # Composition
         self.status = "scheduled"
     
     def get_id(self) -> str:
         """Returns unique appointment identifier."""
-        return f"{self.date}_{self.time}_{self.patient.get_id()}_{self.room.get_id()}" # Room ID added for better uniqueness
+        return f"{self.date}_{self.time}_{self.patient.get_id()}"
     
     def cancel(self) -> None:
         """Marks appointment as cancelled."""
@@ -34,4 +34,5 @@ class Appointment(Identifiable):
     
     def __repr__(self):
         return (f"<Appointment: {self.date} at {self.time} - "
-                f"Dr. {self.doctor.name} in Room {self.room.room_number}>")
+                f"{self.doctor.specialty} ({self.patient.name}) "
+                f"in Room {self.room.room_number}>")
