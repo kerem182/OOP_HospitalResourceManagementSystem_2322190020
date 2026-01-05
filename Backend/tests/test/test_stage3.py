@@ -4,12 +4,12 @@ Tests workload optimization and statistical reporting.
 """
 import unittest
 from unittest.mock import Mock
-from app.models.patient import Patient
-from app.models.doctor import Doctor
-from app.models.room import Room
-from app.models.appointment import Appointment
-from app.models.hospital import Hospital
-from app.models.exceptions import (
+from app.patient import Patient
+from app.doctor import Doctor
+from app.room import Room
+from app.appointment import Appointment
+from app.hospital import Hospital
+from app.exceptions import (
     PatientNotFoundError,
     DoctorNotFoundError,
     AppointmentConflictError,
