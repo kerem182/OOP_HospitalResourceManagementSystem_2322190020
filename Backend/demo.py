@@ -117,7 +117,7 @@ def main():
     print_section("3. STATISTICAL REPORTING")
     
     # Cancel one appointment for statistics demo
-    hospital.cancel_appointment("2025-12-20_10:00_P002_102")
+    hospital.cancel_appointment("2025-12-20_10:00_P002")
     print("\n📝 Note: Cancelled one appointment for statistics demo\n")
     
     # Doctor Workload Report
