@@ -509,7 +509,7 @@ def show_sidebar():
                 st.rerun()
         
         st.markdown("---")
-        st.caption("© 2024 Hospital Management System")
+        st.caption("© 2026 Hospital Management System")
 
 
 # ==================== MAIN APPLICATION ====================
