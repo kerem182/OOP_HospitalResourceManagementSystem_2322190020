@@ -5,11 +5,11 @@ Stage 2: Essential tests covering core functionality.
 
 import unittest
 from unittest.mock import Mock
-from app.models.patient import Patient
-from app.models.doctor import Doctor
-from app.models.appointment import Appointment
-from app.models.hospital import Hospital
-from app.models.exceptions import (
+from app.patient import Patient
+from app.doctor import Doctor
+from app.appointment import Appointment
+from app.hospital import Hospital
+from app.exceptions import (
     PatientNotFoundError,
     DoctorNotFoundError,
     AppointmentConflictError,
