@@ -498,6 +498,12 @@ def show_sidebar():
         
         if st.button("🗑️ Clear All Appointments", use_container_width=True):
             if st.session_state.hospital._appointments:
+                all_appts = list(st.session_state.hospital._appointments.values())
+                for appt in all_appts:
+                    try:
+                        st.session_state.hospital.cancel_appointment(appt.get_id())
+                    except:
+                        pass
                 st.session_state.hospital._appointments.clear()
                 st.success("All appointments cleared!")
                 st.rerun()
