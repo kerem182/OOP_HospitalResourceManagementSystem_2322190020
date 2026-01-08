@@ -9,6 +9,7 @@ from app.patient import Patient
 from app.doctor import Doctor
 from app.appointment import Appointment
 from app.hospital import Hospital
+from app.hospital import Room
 from app.exceptions import (
     PatientNotFoundError,
     DoctorNotFoundError,
@@ -41,9 +42,9 @@ class TestAppointment(unittest.TestCase):
         """Test that appointment contains patient and doctor."""
         patient = Patient("John Doe", "P001", "1990-01-01")
         doctor = Doctor("Dr. Smith", "D001", "Cardiology")
-        
-        appointment = Appointment("2025-12-20", "09:00", "Checkup", 
-                                patient, doctor)
+        room = Room(101, 1, "Consultation Room")
+        appointment = Appointment("2025-12-20", "09:00", "Checkup", patient, doctor, room)
+
         
         # Verify composition
         self.assertEqual(appointment.patient, patient)
@@ -59,6 +60,8 @@ class TestHospital(unittest.TestCase):
         self.hospital = Hospital("Test Hospital")
         self.patient = Patient("John Doe", "P001", "1990-01-01")
         self.doctor = Doctor("Dr. Smith", "D001", "Cardiology")
+        self.room = Room(101, 2, "Consultation Room") 
+        self.hospital.register_room(self.room)        
     
     def test_register_patient(self):
         """Test patient registration."""
@@ -88,11 +91,12 @@ class TestHospital(unittest.TestCase):
         self.hospital.register_doctor(self.doctor)
         
         appointment = self.hospital.schedule_appointment(
-            patient_id="P001",
-            doctor_id="D001",
-            date="2025-12-20",
-            time="09:00",
-            reason="Routine checkup"
+        patient_id="P001",
+        doctor_id="D001",
+        room_id="101",
+        date="2025-12-20",
+        time="09:00",
+        reason="Routine checkup"
         )
         
         self.assertIsNotNone(appointment)
@@ -107,6 +111,7 @@ class TestHospital(unittest.TestCase):
             self.hospital.schedule_appointment(
                 patient_id="P999",
                 doctor_id="D001",
+                room_id="101",
                 date="2025-12-20",
                 time="09:00",
                 reason="Test"
@@ -120,29 +125,31 @@ class TestHospital(unittest.TestCase):
             self.hospital.schedule_appointment(
                 patient_id="P001",
                 doctor_id="D999",
+                room_id="101",
                 date="2025-12-20",
                 time="09:00",
-                reason="Test"
+                reason="Checkup"
             )
     
     def test_appointment_conflict_error(self):
         """Test AppointmentConflictError exception."""
         self.hospital.register_patient(self.patient)
         self.hospital.register_doctor(self.doctor)
-        
-        # Schedule first appointment
-        self.hospital.schedule_appointment(
-            "P001", "D001", "2025-12-20", "09:00", "First"
-        )
-        
-        # Try to schedule at same time - should raise error
+    
         patient2 = Patient("Jane Doe", "P002", "1992-05-15")
         self.hospital.register_patient(patient2)
-        
+
+    # Schedule first appointment
+        self.hospital.schedule_appointment(
+        "P001", "D001", "101", "2025-12-20", "09:00", "Checkup"
+    )
+
+    # Try to schedule at same time - should raise error   
         with self.assertRaises(AppointmentConflictError):
-            self.hospital.schedule_appointment(
-                "P002", "D001", "2025-12-20", "09:00", "Second"
-            )
+         self.hospital.schedule_appointment(
+            "P002", "D001", "101", "2025-12-20", "09:00", "Checkup"
+        )
+
     
     def test_cancel_appointment(self):
         """Test appointment cancellation."""
@@ -150,7 +157,7 @@ class TestHospital(unittest.TestCase):
         self.hospital.register_doctor(self.doctor)
         
         appointment = self.hospital.schedule_appointment(
-            "P001", "D001", "2025-12-20", "09:00", "Checkup"
+            "P001", "D001", "101", "2025-12-20", "09:00", "Checkup"
         )
         
         # Cancel
@@ -167,6 +174,9 @@ class TestHospital(unittest.TestCase):
         """Test using mock for dependency injection."""
         hospital = Hospital("Test Hospital")
         
+        local_room = Room(101, 2, "Consultation Room")
+        hospital.register_room(local_room)
+
         # Create mock patient
         mock_patient = Mock(spec=Patient)
         mock_patient.get_id.return_value = "P001"
@@ -180,7 +190,7 @@ class TestHospital(unittest.TestCase):
         
         # Schedule
         appointment = hospital.schedule_appointment(
-            "P001", "D001", "2025-12-20", "09:00", "Test"
+            "P001", "D001", "101", "2025-12-20", "09:00", "Test"
         )
         
         # Verify mock was used
